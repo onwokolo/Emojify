@@ -1,4 +1,4 @@
-package com.example.emojify.ui.Home
+package com.example.emojify.ui.home
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
