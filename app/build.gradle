@@ -50,3 +50,20 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api libraries.appcompat
+    api libraries.androidKtx
+    api libraries.kotlinReflect
+    api libraries.kotlinCoroutines
+    api libraries.koin
+    api libraries.koinScope
+    api libraries.timber
+    api libraries.kotlinCoroutines
+    api libraries.kotlinReflect
+    api libraries.koinScope
+
+    testImplementation libraries.junit
+    androidTestImplementation libraries.androidTest
+    androidTestImplementation libraries.espresso
+}

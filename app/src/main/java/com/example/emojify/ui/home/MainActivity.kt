@@ -2,24 +2,38 @@ package com.example.emojify.ui.home
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.example.emojify.R
+import com.example.emojify.base.BaseActivity
+import org.koin.androidx.scope.currentScope
 
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity(), MainActivityContract.View {
+
+    private val presenter: MainActivityContract.Presenter by currentScope.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        presenter.takeView(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.dropView()
+    }
+    override fun getLayout(): Int {
+        return R.layout.activity_main
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
