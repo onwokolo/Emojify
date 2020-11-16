@@ -1,11 +1,15 @@
 package com.example.emojify.ui.home
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
+import com.example.emojify.ui.data.DataActivity
+import com.example.emojify.ui.history.HistoryActivity
+import com.example.emojify.ui.log.LogActivity
 import org.koin.androidx.scope.currentScope
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,14 +22,31 @@ class MainActivity : BaseActivity(), MainActivityContract.View {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
     }
     override fun onStart() {
         super.onStart()
         presenter.takeView(this)
+        //LOG BUTTON TO LOG PAGE
+        val logbutton = findViewById<Button>(R.id.LogButton)
+        logbutton.setOnClickListener{
+            val intent = Intent(this, LogActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        //BUTTON TO HISTORY PAGE
+        val histbutton = findViewById<Button>(R.id.HistButton)
+        histbutton.setOnClickListener{
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        //BUTTON TO DATA PAGE
+        val databutton = findViewById<Button>(R.id.DataButton)
+        databutton.setOnClickListener{
+            val intent = Intent(this, DataActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onStop() {

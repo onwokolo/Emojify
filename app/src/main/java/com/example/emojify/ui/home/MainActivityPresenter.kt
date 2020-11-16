@@ -6,6 +6,7 @@ class MainActivityPresenter: MainActivityContract.Presenter {
 
     override fun takeView(view: MainActivityContract.View) {
         this.view = view
+
     }
 
     override fun dropView() {

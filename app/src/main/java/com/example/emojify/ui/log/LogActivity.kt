@@ -1,7 +1,6 @@
 package com.example.emojify.ui.log
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import com.example.emojify.R
@@ -18,10 +17,6 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
     }
     override fun onStart() {
         super.onStart()
@@ -33,7 +28,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         presenter.dropView()
     }
     override fun getLayout(): Int {
-        return R.layout.activity_main
+        return R.layout.activity_log
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
