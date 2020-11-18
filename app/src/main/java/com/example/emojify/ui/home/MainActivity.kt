@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.TextView
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.ui.data.DataActivity
@@ -46,6 +47,25 @@ class MainActivity : BaseActivity(), MainActivityContract.View {
             val intent = Intent(this, DataActivity::class.java)
             startActivity(intent)
             finish()
+        }
+        //SAMPLE IMAGE BUTTON MUST REMOVE BEFORE PRESENTATION
+        val sampleButton = findViewById<Button>(R.id.SampleImageButton)
+        sampleButton.setOnClickListener{
+            //set sample text here for your output
+            val sampleText = findViewById<TextView>(R.id.SampleImageText)
+            sampleText.text = "SAMPLE TEXT";
+            val angry = R.drawable.angry
+            val angryg = R.drawable.angryg
+            val confused = R.drawable.confused
+            val disgusted = R.drawable.digustedg
+            val happy = R.drawable.happy
+            val happyg = R.drawable.happyg
+            val neutral = R.drawable.neutral
+            val sadg = R.drawable.sadg
+            val scaredg = R.drawable.scaredg
+            val surprised = R.drawable.surprised
+            val surprisedg = R.drawable.surprisedg
+            //USE THIS IMAGES OR ADD OTHERS IF YOU WISH FOR YOUR EMOTION TESTING
         }
     }
 
