@@ -7,6 +7,8 @@ import android.view.MenuItem
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.ui.home.MainActivity
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarEntry
 import kotlinx.android.synthetic.main.activity_data.*
 import org.koin.androidx.scope.currentScope
 
@@ -15,10 +17,11 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
 
     private val presenter: DataActivityContract.Presenter by currentScope.inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbar)
-    }
+    //override fun onCreate(savedInstanceState: Bundle?) {
+    //    super.onCreate(savedInstanceState)
+    //    setSupportActionBar(toolbar)
+    //}
+
     override fun onStart() {
         super.onStart()
         HomeButton.setOnClickListener {
@@ -31,6 +34,8 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
         presenter.takeView(this)
+
+
     }
 
     override fun onStop() {

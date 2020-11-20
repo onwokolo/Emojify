@@ -14,6 +14,7 @@ import org.koin.androidx.scope.currentScope
 
 class SplashActivity : BaseActivity(), SplashContract.View {
     //ANIM LOGO FUNCTION
+    lateinit var logo: ImageView
     private fun animLogo(){
         val rotate=AnimationUtils.loadAnimation(this, R.anim.rotate_anim)
         logo.animation=rotate
@@ -24,7 +25,7 @@ class SplashActivity : BaseActivity(), SplashContract.View {
     //GALLERY INIT
     lateinit var button: Button
     private val pickImage=100
-    lateinit var logo: ImageView
+
     private var imageUri: Uri?=null
     private val presenter: SplashContract.Presenter by currentScope.inject() //grabs an instance of presenter
     //the presenter will always be the same object, so we use currentScope.inject() to grab the same object instead of constructing a new one
@@ -33,7 +34,6 @@ class SplashActivity : BaseActivity(), SplashContract.View {
         super.onCreate(savedInstanceState)
         setContentView(getLayout())
         logo = findViewById<ImageView>(R.id.Logo);
-        setActionBar(toolbar, "Splash Example", false)
         setupMainButton()
         presenter.takeView(this)
     }

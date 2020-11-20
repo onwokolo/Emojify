@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.splash.SplashActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/AppTheme.NoActionBar"/>
-
     <TextView
         android:id="@+id/Title"
         android:layout_width="wrap_content"

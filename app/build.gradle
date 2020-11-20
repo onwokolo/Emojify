@@ -26,6 +26,10 @@ android {
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
+    //CHARTS FOR DATA TAB
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -49,6 +53,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //CHARTS FOR DATA TAB
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 dependencies {
 

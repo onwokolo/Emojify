@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_history.*
 import org.koin.androidx.scope.currentScope
+import java.time.LocalDate
 
 
 class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
@@ -17,7 +19,6 @@ class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbar)
     }
     override fun onStart() {
         super.onStart()

@@ -6,19 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.data.DataActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/AppTheme.NoActionBar"/>
-
-    <TextView
-        android:id="@+id/autoDate"
+    <android.widget.TextClock
+        android:id="@+id/datetime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="date"
-        android:textSize="30sp"
+        android:format12Hour="dd-MMM-yyyy"
+        android:format24Hour="dd-MMM-yyyy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,5 +22,24 @@
         android:text="Home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/bar"
+        android:layout_width="344dp"
+        android:layout_height="265dp"
+        android:layout_marginTop="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HomeButton" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie"
+        android:layout_width="344dp"
+        android:layout_height="265dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

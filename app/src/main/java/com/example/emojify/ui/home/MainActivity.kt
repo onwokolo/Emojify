@@ -13,7 +13,6 @@ import com.example.emojify.ui.history.HistoryActivity
 import com.example.emojify.ui.log.LogActivity
 import org.koin.androidx.scope.currentScope
 
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), MainActivityContract.View {
 
@@ -21,8 +20,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbar)
-
     }
     override fun onStart() {
         super.onStart()
