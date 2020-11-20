@@ -19,7 +19,7 @@ import org.koin.androidx.scope.currentScope
 class LogActivity : BaseActivity(), LogActivityContract.View {
     private val presenter: LogActivityContract.Presenter by currentScope.inject()
     private val storage = StorageSystem.storage
-    private var imageView = CaptView
+    private lateinit var imageView: ImageView
     private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +27,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
     }
     override fun onStart() {
         super.onStart()
+        this.imageView = CaptView
         presenter.takeView(this)
         HomeButton.setOnClickListener {
             val intent = Intent(
