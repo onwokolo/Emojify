@@ -19,11 +19,10 @@ import org.koin.androidx.scope.currentScope
 class LogActivity : BaseActivity(), LogActivityContract.View {
     private val presenter: LogActivityContract.Presenter by currentScope.inject()
     private val storage = StorageSystem.storage
-    private lateinit var imageView: ImageView
+    private var imageView = CaptView
     private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.imageView = CaptView
         setSupportActionBar(toolbar)
     }
     override fun onStart() {
