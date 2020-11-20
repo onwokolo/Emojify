@@ -6,15 +6,15 @@ import com.example.emojify.ui.data.DataActivityPresenter
 import com.example.emojify.ui.history.HistoryActivity
 import com.example.emojify.ui.history.HistoryActivityContract
 import com.example.emojify.ui.history.HistoryActivityPresenter
-import com.example.emojify.ui.splash.SplashActivity
-import com.example.emojify.ui.splash.SplashContract
-import com.example.emojify.ui.splash.SplashPresenter
 import com.example.emojify.ui.home.MainActivity
 import com.example.emojify.ui.home.MainActivityContract
 import com.example.emojify.ui.home.MainActivityPresenter
 import com.example.emojify.ui.log.LogActivity
 import com.example.emojify.ui.log.LogActivityContract
 import com.example.emojify.ui.log.LogActivityPresenter
+import com.example.emojify.ui.splash.SplashActivity
+import com.example.emojify.ui.splash.SplashContract
+import com.example.emojify.ui.splash.SplashPresenter
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
