@@ -9,16 +9,21 @@ import java.io.File
 class StorageSystem(androidContext: Context) {
 
     private var context = androidContext
-    fun getBaseDirectory(): File {
+    private fun getBaseDirectory(): File {
         return(context.filesDir)
     }
-    fun getDirectory(file: String): File {
+    private fun getDirectory(file: String): File {
         return context.getDir(file, MODE_PRIVATE);
     }
-    fun getFile(file: String): File {
+    private fun getFile(file: String): File {
         return File(context.filesDir.absolutePath + file)
     }
+    fun getEntrys(): ArrayList<Entry>? {
+        return null
+    }
+    fun setEntrys(entries: ArrayList<Entry>) {
 
+    }
     companion object {
         val storage = StorageSystem(ApplicationStart.context)
     }
