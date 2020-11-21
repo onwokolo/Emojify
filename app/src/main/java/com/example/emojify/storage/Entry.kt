@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
+import com.example.emojify.ApplicationStart
+import com.example.emojify.R
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 
 
@@ -32,7 +35,11 @@ class Entry(val thumbnail: ByteArray, val date: String, val emotion: String) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, compression, stream);
                 return stream.toByteArray()
             }
-        return ByteArray(0)
+            Timber.e("No image available!")
+
+            val stream = ByteArrayOutputStream()
+            BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.unavailable).compress(Bitmap.CompressFormat.JPEG, 50, stream)
+            return stream.toByteArray()
         }
         private fun convertByteArrayToBitmap(b: ByteArray): Bitmap {
             return BitmapFactory.decodeByteArray(b, 0, b.size)
