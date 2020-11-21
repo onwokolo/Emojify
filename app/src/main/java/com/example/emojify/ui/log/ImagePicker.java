@@ -138,13 +138,14 @@ public class ImagePicker {
 
     private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
         int rotation;
-        if (isCamera) {
-            rotation = getRotationFromCamera(context, imageUri);
-        } else {
-            rotation = getRotationFromGallery(context, imageUri);
-        }
-        Timber.d("Image rotation: %s", rotation);
-        return rotation;
+        return 0;
+//        if (isCamera) {
+//            rotation = getRotationFromCamera(context, imageUri);
+//        } else {
+//            rotation = getRotationFromGallery(context, imageUri);
+//        }
+//        Timber.d("Image rotation: %s", rotation);
+//        return rotation;
     }
 
     private static int getRotationFromCamera(Context context, Uri imageFile) {

@@ -3,6 +3,7 @@ package com.example.emojify
 import android.app.Application
 import android.content.Context
 import com.example.emojify.di.appModule
+import com.example.emojify.storage.StorageSystem
 import org.koin.android.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -14,6 +15,7 @@ open class ApplicationStart : Application() {
     //Despite it saying 'Class "ApplicationStart" is never used', it is indeed used in 'AndroidManifest.xml'
     override fun onCreate() {
         context = applicationContext
+        StorageSystem.storage.setContext(context)
         super.onCreate()
 
         if (BuildConfig.DEBUG) {

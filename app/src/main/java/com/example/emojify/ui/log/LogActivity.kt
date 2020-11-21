@@ -1,18 +1,21 @@
 package com.example.emojify.ui.log
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
+import com.example.emojify.storage.Entry
 import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
-import kotlinx.android.synthetic.main.activity_main.toolbar
 import org.koin.androidx.scope.currentScope
 
 
@@ -23,7 +26,6 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
     private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbar)
     }
     override fun onStart() {
         super.onStart()
@@ -39,10 +41,22 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
         CaptButton.setOnClickListener {
+            storage.addEntry(Entry(Entry.convertImageToByteArray(imageView), "11-11-11", "EXAMPLE EMOTION"))
+            storage.commitEntries()
         }
         ULButton.setOnClickListener {
             //TODO() request camera permissions immediately here
-            startActivityForResult(getPickImageIntent(), 1)
+            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                startActivityForResult(getPickImageIntent(), 1)
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    Toast.makeText(this, "Permission is needed to grab images and camera previews",
+                    Toast.LENGTH_SHORT).show()
+                }
+                requestPermissions(Array(1) {Manifest.permission.CAMERA}, 5);
+            }
+
+
         }
     }
     @SuppressLint("RestrictedApi")
