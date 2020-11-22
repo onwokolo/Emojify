@@ -42,8 +42,8 @@ public class ImagePicker {
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePhotoIntent.putExtra("return-data", true);
-        Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", getTempFile(context));
-        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, apkURI);
+        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", getTempFile(context));
+        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
         intentList = addIntentsToList(context, intentList, pickIntent);
         intentList = addIntentsToList(context, intentList, takePhotoIntent);
@@ -80,7 +80,7 @@ public class ImagePicker {
                     imageReturnedIntent.getData() == null  ||
                     imageReturnedIntent.getData().toString().contains(imageFile.toString()));
             if (isCamera) {     /** CAMERA **/
-                selectedImage = Uri.fromFile(imageFile);
+                selectedImage = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", getTempFile(context));
             } else {            /** ALBUM **/
                 selectedImage = imageReturnedIntent.getData();
             }
@@ -138,14 +138,14 @@ public class ImagePicker {
 
     private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
         int rotation;
-        return 0;
-//        if (isCamera) {
-//            rotation = getRotationFromCamera(context, imageUri);
-//        } else {
-//            rotation = getRotationFromGallery(context, imageUri);
-//        }
-//        Timber.d("Image rotation: %s", rotation);
-//        return rotation;
+        Timber.e(String.valueOf(isCamera));
+        if (isCamera) {
+            rotation = getRotationFromCamera(context, imageUri);
+        } else {
+            rotation = getRotationFromGallery(context, imageUri);
+        }
+        Timber.d("Image rotation: %s", rotation);
+        return rotation;
     }
 
     private static int getRotationFromCamera(Context context, Uri imageFile) {
@@ -153,7 +153,7 @@ public class ImagePicker {
         try {
 
             context.getContentResolver().notifyChange(imageFile, null);
-            ExifInterface exif = new ExifInterface(imageFile.getPath());
+            ExifInterface exif = new ExifInterface(context.getContentResolver().openAssetFileDescriptor(imageFile, "r").getFileDescriptor());
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL);

@@ -41,8 +41,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
         CaptButton.setOnClickListener {
-            storage.addEntry(Entry(Entry.convertImageToByteArray(imageView), "11-11-11", "EXAMPLE EMOTION"))
-            storage.commitEntries()
+
         }
         ULButton.setOnClickListener {
             //TODO() request camera permissions immediately here
