@@ -10,7 +10,6 @@ import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
@@ -79,7 +78,7 @@ class EmotionClassifier(private val context: Context) {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 
-    private fun classify(bitmap: Bitmap): String {
+    private fun classify(bitmap: Bitmap): Array<String> {
         check(isInitialized) { "TF Lite Interpreter is not initialized yet." }
 
         // TODO: Add code to run inference with TF Lite.
@@ -101,22 +100,23 @@ class EmotionClassifier(private val context: Context) {
         // Post-processing: find the digit that has the highest probability
         // and return it a human-readable string.
         val result = output[0]
-//        Log.d(TAG, "Output Result: ${result.indices}")
         val maxIndex = result.indices.maxBy { result[it] } ?: -1
         val emotionString = getEmotionString(maxIndex).toUpperCase()
+        val confidence = String.format("%.4f", result[maxIndex])
+//        Log.d(TAG, "Output Result: ${result.indices}")
 //        Log.d(TAG, "Max Index: $maxIndex")
 //        Log.d(TAG, "Emotion Label: $emotionString")
-        val resultString = "Prediction Result: %d\nConfidence: %2f".
-        format(maxIndex, result[maxIndex])
+//        Log.d(TAG, "Confidence Level: $confidence")
 
-        return emotionString
+        return arrayOf<String>(emotionString, confidence)
     }
 
     fun classifyAsync(bitmap: Bitmap): Task<String> {
         val task = TaskCompletionSource<String>()
         executorService.execute {
             val result = classify(bitmap)
-            task.setResult(result)
+            task.setResult(result[0])
+            //task.setResult(result[0] + " (" + result[1] + ")")
         }
         return task.task
     }
@@ -162,7 +162,6 @@ class EmotionClassifier(private val context: Context) {
                 lineNumber += 1
             }
         } catch (e: IOException) {
-            // File not found?
             Log.d(TAG, "labels.txt not found.")
         }
         return label
@@ -170,10 +169,8 @@ class EmotionClassifier(private val context: Context) {
 
     companion object {
         private const val TAG = "EmotionClassifier"
-
         private const val FLOAT_TYPE_SIZE = 4
         private const val PIXEL_SIZE = 1
-
         private const val OUTPUT_CLASSES_COUNT = 7
     }
 }

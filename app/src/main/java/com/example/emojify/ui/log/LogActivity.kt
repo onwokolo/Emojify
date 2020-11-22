@@ -35,7 +35,6 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         predictedTextView = findViewById(R.id.predicted_text)
 
         //Setup the emotion classifier
@@ -63,7 +62,12 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
         CaptButton.setOnClickListener {
-            classifyImage()
+            if (imageView.drawable != null) {
+                classifyImage()
+            }
+            else{
+                predictedTextView?.text = getString(R.string.prediction_text_placeholder)
+            }
         }
         ULButton.setOnClickListener {
             //TODO() request camera permissions immediately here
