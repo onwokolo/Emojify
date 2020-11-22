@@ -4,15 +4,21 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
+import com.example.emojify.ApplicationStart
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.storage.Entry
 import com.example.emojify.storage.StorageSystem
+import com.example.emojify.ui.home.EmotionClassifier
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
@@ -23,14 +29,30 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
     private val presenter: LogActivityContract.Presenter by currentScope.inject()
     private val storage = StorageSystem.storage
     private lateinit var imageView: ImageView
+    private var predictedTextView: TextView? = null
     private val REQUEST_IMAGE_CAPTURE = 1
+    private var emotionClassifier = EmotionClassifier(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        predictedTextView = findViewById(R.id.predicted_text)
+
+        //Setup the emotion classifier
+        emotionClassifier
+            .initialize()
+            .addOnFailureListener { e -> Log.e(TAG, "Error to setting up digit classifier.", e) }
     }
     override fun onStart() {
         super.onStart()
         this.imageView = CaptView
         presenter.takeView(this)
+
+        //Comment/Uncomment/Remove the following 2 lines below...
+        //I'm using them to set the display image just to one of our test images
+        //var bitmap = BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
+        //imageView.setImageBitmap(bitmap)
+
         HomeButton.setOnClickListener {
             val intent = Intent(
                 this,
@@ -41,7 +63,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
         CaptButton.setOnClickListener {
-
+            classifyImage()
         }
         ULButton.setOnClickListener {
             //TODO() request camera permissions immediately here
@@ -54,7 +76,6 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
                 }
                 requestPermissions(Array(1) {Manifest.permission.CAMERA}, 5);
             }
-
 
         }
     }
@@ -91,5 +112,25 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             val bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
             imageView.setImageBitmap(bitmap)
         }
+    }
+
+    private fun classifyImage() {
+        var bitmap = imageView.drawable.toBitmap()
+        if ((bitmap != null) && (emotionClassifier.isInitialized)) {
+            emotionClassifier
+                .classifyAsync(bitmap)
+                .addOnSuccessListener { resultText -> predictedTextView?.text = resultText }
+                .addOnFailureListener { e ->
+                    predictedTextView?.text = getString(
+                        R.string.classification_error_message,
+                        e.localizedMessage
+                    )
+                    Log.e(TAG, "Error classifying drawing.", e)
+                }
+        }
+    }
+
+    companion object {
+        private const val TAG = "LogActivity"
     }
 }

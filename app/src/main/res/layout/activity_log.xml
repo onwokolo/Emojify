@@ -34,8 +34,9 @@
 
     <Button
         android:id="@+id/CaptButton"
-        android:layout_width="62dp"
-        android:layout_height="54dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PREDICT"
         app:icon="@android:drawable/ic_menu_camera"
         app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,5 +53,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CaptButton" />
+
+    <TextView
+        android:id="@+id/predicted_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/blankText"
+        app:layout_constraintBottom_toTopOf="@+id/CaptButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CaptView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

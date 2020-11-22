@@ -7,8 +7,10 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import org.tensorflow.lite.Interpreter
+import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
@@ -99,13 +101,15 @@ class EmotionClassifier(private val context: Context) {
         // Post-processing: find the digit that has the highest probability
         // and return it a human-readable string.
         val result = output[0]
-        Log.d(TAG, "Output Result: ${result.indices}")
+//        Log.d(TAG, "Output Result: ${result.indices}")
         val maxIndex = result.indices.maxBy { result[it] } ?: -1
-        Log.d(TAG, "Max Index: $maxIndex")
+        val emotionString = getEmotionString(maxIndex).toUpperCase()
+//        Log.d(TAG, "Max Index: $maxIndex")
+//        Log.d(TAG, "Emotion Label: $emotionString")
         val resultString = "Prediction Result: %d\nConfidence: %2f".
         format(maxIndex, result[maxIndex])
 
-        return resultString
+        return emotionString
     }
 
     fun classifyAsync(bitmap: Bitmap): Task<String> {
@@ -144,6 +148,24 @@ class EmotionClassifier(private val context: Context) {
         }
 
         return byteBuffer
+    }
+
+    private fun getEmotionString(index: Int): String{
+        var lineNumber = 1
+        var label = ""
+        try {
+            val inputStream = context.assets.open("labels.txt")
+            val reader = inputStream.bufferedReader().use(BufferedReader::readText)
+            for (line in reader.lines()) {
+                if(lineNumber == index+1)
+                    label = line
+                lineNumber += 1
+            }
+        } catch (e: IOException) {
+            // File not found?
+            Log.d(TAG, "labels.txt not found.")
+        }
+        return label
     }
 
     companion object {

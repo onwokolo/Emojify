@@ -5,4 +5,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="splash_title">INSERT NAME HERE</string>
+
+    <string name="classification_error_message" translatable="false">Error classifying emotion: %s</string>
+    <string name="blankText" translatable="false"> </string>
 </resources>

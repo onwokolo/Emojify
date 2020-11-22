@@ -16,7 +16,7 @@ import org.koin.androidx.scope.currentScope
 class MainActivity : BaseActivity(), MainActivityContract.View {
 
     private val presenter: MainActivityContract.Presenter by currentScope.inject()
-    private var emotionClassifier = EmotionClassifier(this)
+//    private var emotionClassifier = EmotionClassifier(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
