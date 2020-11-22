@@ -24,6 +24,11 @@ android {
         }
     }
 
+    //FOR TENSOR-FLOW
+    aaptOptions {
+        noCompress "tflite"
+    }
+
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
@@ -57,6 +62,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
     //CHARTS FOR DATA TAB
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    //FOR TENSOR-FLOW
+    implementation 'org.tensorflow:tensorflow-lite:2.0.0'
+    // Task API
+    implementation "com.google.android.gms:play-services-tasks:17.0.0"
 }
 dependencies {
 
