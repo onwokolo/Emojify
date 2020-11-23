@@ -65,12 +65,15 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
 
         //Comment/Uncomment/Remove the following 6 lines below...
         //I'm using them to set the display image just to one of our test images
+        /*
         _bitmap = if(_bitmap != null) _bitmap
             else {
                 //BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
                 ImagePicker.rotateResourceImage(ApplicationStart.context.resources, R.drawable.neutral)
             }
         imageView.setImageBitmap(_bitmap)
+
+         */
 
         //val file: File = Loader.cacheResource("haarcascade_frontalface_default.xml")
         //val url = URL("https://raw.github.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_alt.xml")
