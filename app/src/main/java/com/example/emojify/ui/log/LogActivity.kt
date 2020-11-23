@@ -4,7 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import com.example.emojify.ApplicationStart
+import com.example.emojify.ApplicationStart.Factory.context
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.storage.Entry
@@ -22,16 +26,28 @@ import com.example.emojify.ui.home.EmotionClassifier
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
+import org.bytedeco.javacpp.Loader
+import org.bytedeco.javacpp.opencv_core
+import org.bytedeco.javacpp.opencv_core.cvLoad
+import org.bytedeco.javacpp.opencv_objdetect
+import org.bytedeco.javacv.AndroidFrameConverter
+import org.bytedeco.javacv.Frame
+import org.bytedeco.javacv.Java2DFrameUtils.toMat
 import org.koin.androidx.scope.currentScope
+import java.io.File
+import java.lang.Exception
+import java.net.URL
 
 
 class LogActivity : BaseActivity(), LogActivityContract.View {
     private val presenter: LogActivityContract.Presenter by currentScope.inject()
     private val storage = StorageSystem.storage
     private lateinit var imageView: ImageView
+    private lateinit var grayscaleImageView: ImageView
     private var predictedTextView: TextView? = null
     private val REQUEST_IMAGE_CAPTURE = 1
     private var emotionClassifier = EmotionClassifier(this)
+    private var _bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +63,19 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         this.imageView = CaptView
         presenter.takeView(this)
 
-        //Comment/Uncomment/Remove the following 2 lines below...
+        //Comment/Uncomment/Remove the following 6 lines below...
         //I'm using them to set the display image just to one of our test images
-        //var bitmap = BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
-        //imageView.setImageBitmap(bitmap)
+        _bitmap = if(_bitmap != null) _bitmap
+            else {
+                //BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
+                ImagePicker.rotateResourceImage(ApplicationStart.context.resources, R.drawable.neutral)
+            }
+        imageView.setImageBitmap(_bitmap)
+
+        //val file: File = Loader.cacheResource("haarcascade_frontalface_default.xml")
+        //val url = URL("https://raw.github.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_alt.xml")
+        //val file: File = Loader.cacheResource(url)
+        //val classifierName = file.getAbsolutePath()
 
         HomeButton.setOnClickListener {
             val intent = Intent(
@@ -115,11 +140,16 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
             imageView.setImageBitmap(bitmap)
+
+            // For testing purpose...allow imageView to use
+            // selected Image from camera or gallery instead of only the test image
+            _bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
         }
     }
 
     private fun classifyImage() {
         var bitmap = imageView.drawable.toBitmap()
+
         if ((bitmap != null) && (emotionClassifier.isInitialized)) {
             emotionClassifier
                 .classifyAsync(bitmap)
@@ -132,6 +162,34 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
                     Log.e(TAG, "Error classifying drawing.", e)
                 }
         }
+    }
+
+    private fun faceDetector(bitmap: Bitmap){
+        //Apply grayscale filter to imageView and save as a new ImageView
+        var matrix = ColorMatrix()
+        matrix.setSaturation(0.0f)
+        var filter = ColorMatrixColorFilter(matrix)
+        //grayscaleImageView = imageView.setColorFilter(filter)
+
+        //Convert bitmap to frame
+        val converter = AndroidFrameConverter()
+        var frame = converter.convert(bitmap)
+
+        //Convert frame to mat
+        var mat = opencv_core.Mat()
+        mat = toMat(frame)
+
+        //TODO() GET THE CLASSIFIER AND DETECT THE FACES
+        /*
+        detectMultiScale(
+            grayScaled, // input image
+            rectangles, // output rectangle
+            1.5, // scale factor
+            5, // minimum neighbors.
+            0, // flags
+            opencv_core.Size(48, 48), //minimum size
+            null //maximum size
+        )*/
     }
 
     companion object {

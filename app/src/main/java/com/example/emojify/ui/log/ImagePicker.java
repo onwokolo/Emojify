@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,8 +18,15 @@ import android.provider.MediaStore;
 
 import androidx.core.content.FileProvider;
 
+import org.bytedeco.javacv.AndroidFrameConverter;
+import org.bytedeco.javacv.Frame;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +199,6 @@ public class ImagePicker {
         return result;
     }
 
-
     private static Bitmap rotate(Bitmap bm, int rotation) {
         if (rotation != 0) {
             Matrix matrix = new Matrix();
@@ -199,5 +206,41 @@ public class ImagePicker {
             return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
         }
         return bm;
+    }
+
+    public static Bitmap rotateResourceImage(Resources res, int resId) throws IOException {
+        Bitmap bitmap = BitmapFactory.decodeResource(res, resId);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //use the compression format of your need
+        InputStream inputStream = new ByteArrayInputStream(stream.toByteArray());
+        return rotateResourceImage(bitmap, inputStream);
+    }
+
+    private static Bitmap rotateResourceImage(Bitmap bitmap, InputStream inputStream) throws IOException {
+        int rotate = 0;
+        ExifInterface exif;
+        exif = new ExifInterface(inputStream);
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL);
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotate = 270;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotate = 180;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotate = 90;
+                break;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotate);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                bitmap.getHeight(), matrix, true);
+    }
+
+    private static Frame convertBitmapToFrame(Bitmap bitmap){
+        AndroidFrameConverter converter = new AndroidFrameConverter();
+        return converter.convert(bitmap);
     }
 }
