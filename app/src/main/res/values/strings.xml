@@ -9,4 +9,5 @@
     <string name="classification_error_message" translatable="false">Error classifying emotion: %s</string>
     <string name="blankText" translatable="false"> </string>
     <string name="prediction_text_placeholder" translatable="false">Please upload an image!</string>
+    <string name="noentries">No entries have been made :(</string>
 </resources>
