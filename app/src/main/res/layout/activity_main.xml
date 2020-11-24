@@ -39,20 +39,4 @@
         android:text="My Data"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HistButton" />
-
-    <Button
-        android:id="@+id/SampleImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sample Image Test"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DataButton" />
-
-    <TextView
-        android:id="@+id/SampleImageText"
-        android:layout_width="108dp"
-        android:layout_height="74dp"
-        android:text="TEXT FOR SAMPLE"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SampleImageButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

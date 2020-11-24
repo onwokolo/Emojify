@@ -15,27 +15,20 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.activity_data.*
-import org.koin.androidx.scope.currentScope
 import timber.log.Timber
 
-class DataActivity : BaseActivity(), DataActivityContract.View {
-
-    private val presenter: DataActivityContract.Presenter by currentScope.inject()
+class DataActivity : BaseActivity() {
     var pieChart: PieChart? = null
     var pieData: PieData? = null
     var pieDataSet: PieDataSet? = null
-    var pieEntries: ArrayList<PieEntry>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.e("TESTING TESTING")
-        //setSupportActionBar(toolbar)
         pieChart = findViewById(R.id.pieChart)
-        getEmotionEntrys()
-        pieDataSet = PieDataSet(pieEntries, "")
+        pieDataSet = PieDataSet(getEmotionEntrys(), "Emotions")
         pieData = PieData(pieDataSet)
         pieChart?.data = pieData
         pieDataSet?.let { set ->
-            set.setColors(*ColorTemplate.JOYFUL_COLORS)
+            set.setColors(*ColorTemplate.MATERIAL_COLORS)
             set.sliceSpace = 2f
             set.valueTextColor = Color.WHITE
             set.valueTextSize = 10f
@@ -43,8 +36,8 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
         }
     }
 
-    private fun getEmotionEntrys() {
-        pieEntries = ArrayList()
+    private fun getEmotionEntrys(): ArrayList<PieEntry> {
+        val result = ArrayList<PieEntry>()
         val entryList = StorageSystem.storage.getEntries()
         val emotionDictionary = ArrayList<EntryCount>()
         var hasEntry = false
@@ -59,12 +52,13 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
             if (!hasEntry) {
                 emotionDictionary.add(EntryCount(1,entry.emotion))
             }
+            hasEntry = false
         }
-        pieEntries?.let {
-            emotionDictionary.forEach { emotion ->
-                it.add(PieEntry(emotion.count.toFloat(), emotion.emotion))
-            }
+
+        emotionDictionary.forEach { emotion ->
+            result.add(PieEntry(emotion.count.toFloat(), emotion.emotion))
         }
+        return result
     }
     data class EntryCount(var count: Int, val emotion: String)
 
@@ -80,7 +74,6 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
             startActivity(intent) //Start the intent, this will create a new process to do the intent
             finish() //Finally, finish this activity, which will call the onDestroy() method
         }
-        presenter.takeView(this)
 
     }
 
@@ -88,7 +81,6 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
 
     override fun onStop() {
         super.onStop()
-        presenter.dropView()
     }
     override fun getLayout(): Int {
         return R.layout.activity_data

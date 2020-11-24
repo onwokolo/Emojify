@@ -22,8 +22,8 @@ import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
-import org.bytedeco.javacv.AndroidFrameConverter;
-import org.bytedeco.javacv.Frame;
+//import org.bytedeco.javacv.AndroidFrameConverter;
+//import org.bytedeco.javacv.Frame;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -211,60 +211,4 @@ public class ImagePicker {
         }
         return bm;
     }
-
-    public static Bitmap rotateResourceImage(Resources res, int resId) throws IOException {
-        Bitmap bitmap = BitmapFactory.decodeResource(res, resId);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //use the compression format of your need
-        InputStream inputStream = new ByteArrayInputStream(stream.toByteArray());
-        return rotateResourceImage(bitmap, inputStream);
-    }
-
-    private static Bitmap rotateResourceImage(Bitmap bitmap, InputStream inputStream) throws IOException {
-        int rotate = 0;
-        ExifInterface exif;
-        exif = new ExifInterface(inputStream);
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL);
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotate = 270;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotate = 180;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotate = 90;
-                break;
-        }
-        Matrix matrix = new Matrix();
-        matrix.postRotate(rotate);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                bitmap.getHeight(), matrix, true);
-    }
-
-    private static Frame convertBitmapToFrame(Bitmap bitmap){
-        AndroidFrameConverter converter = new AndroidFrameConverter();
-        return converter.convert(bitmap);
-    }
-
-    public static int getFaceCount(Bitmap bitmap){
-        int maxFaces = 1;
-        PointF mid = new PointF();
-        Bitmap bitmap565 = bitmap.copy(Bitmap.Config.RGB_565,true);
-        FaceDetector.Face[] faces = new FaceDetector.Face[maxFaces];
-        FaceDetector faceDetector = new FaceDetector(bitmap.getWidth(),bitmap.getHeight(), maxFaces);
-        int faceCount = faceDetector.findFaces(bitmap565, faces);
-        FaceDetector.Face face = faces[0];
-        Log.d("FaceDetection", "Face Count: " + String.valueOf(faceCount));
-        return faceCount;
-    }
-
-    /*public static int detectFaces(Bitmap bmp, int num_faces) {
-        FaceDetector face_detector = new FaceDetector(bmp.getWidth(), bmp.getHeight(), num_faces);
-        FaceDetector.Face[] faces = new FaceDetector.Face[num_faces];
-        int face_count = face_detector.findFaces(bmp, faces);
-
-        return face_count;
-    }*/
 }

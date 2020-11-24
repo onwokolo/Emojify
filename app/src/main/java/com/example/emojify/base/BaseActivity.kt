@@ -18,12 +18,4 @@ abstract class BaseActivity : AppCompatActivity() {
     @LayoutRes
     abstract fun getLayout(): Int
 
-    fun setActionBar(toolbar: Toolbar, title: String, isBackEnabled: Boolean) {
-        setSupportActionBar(toolbar)
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.title = title
-            actionBar.setDisplayHomeAsUpEnabled(isBackEnabled)
-        }
-    }
 }

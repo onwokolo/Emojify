@@ -1,26 +1,23 @@
 package com.example.emojify.ui.history
 
+import EntryAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
-import androidx.core.widget.ListViewAutoScrollHelper
-import androidx.navigation.NavType
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ListView
+import android.widget.TextView
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.storage.Entry
 import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_history.*
-import org.koin.androidx.scope.currentScope
-import java.time.LocalDate
-import EntryAdapter
-import android.view.*
 
 
-class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
+class HistoryActivity : BaseActivity() {
 
-    private val presenter: HistoryActivityContract.Presenter by currentScope.inject()
-    lateinit var list:ListView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,7 +36,6 @@ class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
 
     override fun onStart() {
         super.onStart()
-        presenter.takeView(this)
         HomeButton.setOnClickListener {
             val intent = Intent(
                 this,
@@ -51,10 +47,6 @@ class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter.dropView()
-    }
     override fun getLayout(): Int {
         return R.layout.activity_history
     }
@@ -66,9 +58,6 @@ class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)

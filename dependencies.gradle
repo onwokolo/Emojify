@@ -1,67 +1,12 @@
 //dependencies, a lot of this isn't needed, but kept just in case
 ext.versions = [
-        minSdk              : 21,
-        targetSdk           : 28,
-        compileSdk          : 29,
-        buildTools          : '28.0.3',
-        //Gradle Plugin Versions
-        androidGradlePlugin : '3.5.1',
-        googleGradlePlugin  : '4.3.3',
-        commonsCodec        : '1.10',
-        gson                : '2.8.5',
-        material            : '1.0.0',
         appcompat           : '1.0.2',
-        junit               : '4.12',
-        kotlin              : '1.3.61',
-        kotlinCoroutines    : '1.3.3',
         timber              : '4.7.1',
-        retrofit            : '2.6.0',
-        okhttpInterceptor   : '4.0.0',
-        room                : '2.1.0',
-        workManager         : '2.0.1',
-        constraintlayout    : '1.1.3',
-        ktlint              : '0.35.0',
-        koin                : '2.0.1',
         androidKtx          : '1.1.0',
-        androidTest         : '1.1.1',
-        espresso            : '3.1.1',
-        downloadTask        : '4.0.4',
-        pcap4j              : '1.8.2',
-
-]
-
-ext.gradlePlugins = [
-        android                      : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        googleServices               : "com.google.gms:google-services:$versions.googleGradlePlugin",
-        kotlinPlugin                 : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        kotlinExtension              : "org.jetbrains.kotlin:kotlin-android-extensions:$versions.kotlin",
-        downloadTask                 : "de.undercouch:gradle-download-task:$versions.downloadTask"
 ]
 
 ext.libraries = [
-        kotlinReflect        : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
-        kotlinCoroutines     : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
-        commonsCodec         : "commons-codec:commons-codec:$versions.commonsCodec",
-        gson                 : "com.google.code.gson:gson:$versions.gson",
-        material             : "com.google.android.material:material:$versions.material",
         appcompat            : "androidx.appcompat:appcompat:$versions.appcompat",
         timber               : "com.jakewharton.timber:timber:$versions.timber",
-        retrofit             : "com.squareup.retrofit2:retrofit:$versions.retrofit",
-        retrofitGson         : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
-        okhttpInterceptor    : "com.squareup.okhttp3:logging-interceptor:$versions.okhttpInterceptor",
-        room                 : "androidx.room:room-runtime:$versions.room",
-        roomCompiler         : "androidx.room:room-compiler:$versions.room",
-        roomKtx              : "androidx.room:room-ktx:$versions.room",
-        workManager          : "androidx.work:work-runtime-ktx:$versions.workManager",
-        constraintlayout     : "androidx.constraintlayout:constraintlayout:$versions.constraintlayout",
-        ktlint               : "com.pinterest:ktlint:$versions.ktlint",
-        koin                 : "org.koin:koin-android:$versions.koin",
-        koinScope            : "org.koin:koin-androidx-scope:$versions.koin",
         androidKtx           : "androidx.core:core-ktx:$versions.androidKtx",
-        pcap4j               : "org.pcap4j:pcap4j-core:$versions.pcap4j",
-        pcap4jFactory        : "org.pcap4j:pcap4j-packetfactory-static:$versions.pcap4j",
-        //Test Compile
-        junit                : "junit:junit:$versions.junit",
-        androidTest          : "androidx.test:runner:$versions.androidTest",
-        espresso             : "androidx.test.espresso:espresso-core:$versions.espresso"
 ]

@@ -63,19 +63,16 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
     //CHARTS FOR DATA TAB
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     //FOR TENSOR-FLOW
     implementation 'org.tensorflow:tensorflow-lite:2.0.0'
     //Task API
-    implementation "com.google.android.gms:play-services-tasks:17.0.0"
-    //JAVA OPEN CV FOR FACE DETECTION
-    implementation "org.bytedeco:javacv:1.4.1"
-    implementation "org.bytedeco.javacpp-presets:opencv:3.4.1-1.4.1:android-arm"
+    //implementation "com.google.android.gms:play-services-tasks:17.2.0"
     //Android ML KIT
     implementation 'com.google.mlkit:image-labeling-custom:16.2.1'
     implementation 'com.google.mlkit:face-detection:16.0.2'
@@ -86,16 +83,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api libraries.appcompat
     api libraries.androidKtx
-    api libraries.kotlinReflect
-    api libraries.kotlinCoroutines
-    api libraries.koin
-    api libraries.koinScope
     api libraries.timber
-    api libraries.kotlinCoroutines
-    api libraries.kotlinReflect
-    api libraries.koinScope
-
-    testImplementation libraries.junit
-    androidTestImplementation libraries.androidTest
-    androidTestImplementation libraries.espresso
 }

@@ -10,10 +10,8 @@ import com.example.emojify.R
 import com.example.emojify.storage.Entry
 
 
-internal class EntryAdapter(context: Context, arrayList: ArrayList<Entry>) :
+internal class EntryAdapter(val context: Context, private val arrayList: ArrayList<Entry>) :
     ListAdapter {
-    var arrayList: ArrayList<Entry> = arrayList
-    var context: Context = context
     override fun areAllItemsEnabled(): Boolean {
         return false
     }
@@ -49,8 +47,8 @@ internal class EntryAdapter(context: Context, arrayList: ArrayList<Entry>) :
             val thumbnail: ImageView = returnView.findViewById(R.id.list_image)
             val date: TextView = returnView.findViewById(R.id.date)
             val emotion: TextView = returnView.findViewById(R.id.emotion)
-            date.setText(entry.date)
-            emotion.setText(entry.emotion)
+            date.text = entry.date
+            emotion.text = entry.emotion
             Entry.setImageViewFromByteArray(entry.thumbnail,thumbnail)
         }
         return returnView

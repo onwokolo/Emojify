@@ -1,58 +1,27 @@
 package com.example.emojify.ui.splash
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
 import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_splash.*
-import org.koin.androidx.scope.currentScope
 
-class SplashActivity : BaseActivity(), SplashContract.View {
+class SplashActivity : BaseActivity() {
     //ANIM LOGO FUNCTION
     lateinit var logo: ImageView
-    private fun animLogo(){
-        val rotate=AnimationUtils.loadAnimation(this, R.anim.rotate_anim)
-        logo.animation=rotate
-    }
-    //CAMERA INIT
-    private val cameraRequest=1888
 
     //GALLERY INIT
     lateinit var button: Button
-    private val pickImage=100
 
-    private var imageUri: Uri?=null
-    private val presenter: SplashContract.Presenter by currentScope.inject() //grabs an instance of presenter
-    //the presenter will always be the same object, so we use currentScope.inject() to grab the same object instead of constructing a new one
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayout())
-        logo = findViewById<ImageView>(R.id.Logo);
-        setupMainButton()
-        presenter.takeView(this)
-    }
-    override fun setupMainButton() {
-
+        logo = findViewById(R.id.Logo);
         StartButton.setOnClickListener {
-            val r=(1..3).random()
-            if (r==1) {
-                animLogo()
-            }
-            if (r==2) {
-                animLogo()
-                animLogo()
-            }
-            if (r==3) {
-                animLogo()
-                animLogo()
-                animLogo()
-            }
             val intent = Intent(
                 this,
                 MainActivity::class.java
@@ -64,11 +33,6 @@ class SplashActivity : BaseActivity(), SplashContract.View {
     }
     override fun getLayout(): Int {
         return R.layout.activity_splash
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.dropView()
     }
 
 }

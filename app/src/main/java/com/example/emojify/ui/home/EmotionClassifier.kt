@@ -7,6 +7,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import org.tensorflow.lite.Interpreter
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
@@ -65,7 +66,7 @@ class EmotionClassifier(private val context: Context) {
         this.interpreter = interpreter
 
         isInitialized = true
-        Log.d(TAG, "Initialized TFLite interpreter.")
+        Timber.d("Initialized TFLite interpreter.")
     }
 
     @Throws(IOException::class)
@@ -126,7 +127,7 @@ class EmotionClassifier(private val context: Context) {
             // TODO: close the TF Lite interpreter here
             interpreter?.close()
 
-            Log.d(TAG, "Closed TFLite interpreter.")
+            Timber.d("Closed TFLite interpreter.")
         }
     }
 
@@ -162,7 +163,7 @@ class EmotionClassifier(private val context: Context) {
                 lineNumber += 1
             }
         } catch (e: IOException) {
-            Log.d(TAG, "labels.txt not found.")
+            Timber.d("labels.txt not found.")
         }
         return label
     }

@@ -4,18 +4,18 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
-import com.example.emojify.ApplicationStart
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
+import com.example.emojify.storage.Entry
 import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.EmotionClassifier
 import com.example.emojify.ui.home.MainActivity
@@ -24,12 +24,12 @@ import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
-import org.koin.androidx.scope.currentScope
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-class LogActivity : BaseActivity(), LogActivityContract.View {
-    private val presenter: LogActivityContract.Presenter by currentScope.inject()
+class LogActivity : BaseActivity() {
     private val storage = StorageSystem.storage
     private lateinit var imageView: ImageView
     private var predictedTextView: TextView? = null
@@ -44,21 +44,11 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         //Setup the emotion classifier
         emotionClassifier
             .initialize()
-            .addOnFailureListener { e -> Log.e(TAG, "Error to setting up digit classifier.", e) }
+            .addOnFailureListener { e -> Timber.e(e, "Error to setting up digit classifier.") }
     }
     override fun onStart() {
         super.onStart()
         this.imageView = CaptView
-        presenter.takeView(this)
-
-        //Comment/Uncomment/Remove the following 6 lines below...
-        //I'm using them to set the display image just to one of our test images
-        /*_bitmap = if(_bitmap != null) _bitmap
-            else {
-                //BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
-                ImagePicker.rotateResourceImage(ApplicationStart.context.resources, R.drawable.surprisedg)
-            }
-        imageView.setImageBitmap(_bitmap)*/
 
         HomeButton.setOnClickListener {
             val intent = Intent(
@@ -91,14 +81,10 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
 
         }
     }
-    @SuppressLint("RestrictedApi")
-    fun getPickImageIntent(): Intent? {
+    private fun getPickImageIntent(): Intent? {
         return ImagePicker.getPickImageIntent(this)
     }
-    override fun onStop() {
-        super.onStop()
-        presenter.dropView()
-    }
+
     override fun getLayout(): Int {
         return R.layout.activity_log
     }
@@ -110,15 +96,18 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startActivityForResult(getPickImageIntent(), 1)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
@@ -130,17 +119,6 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         }
     }
 
-    private fun convertImageToGrayscale(bitmap: Bitmap): Bitmap{
-        val grayscaleBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height,Bitmap.Config.ARGB_8888)
-        val c = Canvas(grayscaleBitmap)
-        val paint = Paint()
-        val cm = ColorMatrix()
-        cm.setSaturation(0.0f)
-        val f = ColorMatrixColorFilter(cm)
-        paint.setColorFilter(f)
-        c.drawBitmap(bitmap, 0.0f, 0.0f, paint)
-        return grayscaleBitmap
-    }
 
     @SuppressLint("SetTextI18n")
     private fun classifyImage(){
@@ -152,18 +130,14 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             .build()
         val image = InputImage.fromBitmap(imageView.drawable.toBitmap(),0)
         val detector = FaceDetection.getClient(highAccuracyOpts)
-        var bounds: Rect ?= null
+        var bounds: Rect?
         var croppedBmp: Bitmap
-        val result = detector.process(image)
+        detector.process(image)
             .addOnSuccessListener { faces ->
                 Timber.e("I SUCCEEDED")
                 // Task completed successfully
                 for (face in faces) {
                     bounds = face.boundingBox
-                    val rotY = face.headEulerAngleY // Head is rotated to the right rotY degrees
-                    val rotZ = face.headEulerAngleZ // Head is tilted sideways rotZ degrees
-
-                    //crop image and display it in imageview for test
                     bounds?.let {
                             croppedBmp = Bitmap.createBitmap(
                             imageView.drawable.toBitmap(),
@@ -172,17 +146,23 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
                             it.width(),
                             it.height()
                         )
+
                         //imageView.setImageBitmap(croppedBmp)
-                        if ((croppedBmp != null) && (emotionClassifier.isInitialized)) {
+                        if (emotionClassifier.isInitialized) {
                             emotionClassifier
                                 .classifyAsync(croppedBmp)
-                                .addOnSuccessListener { resultText -> predictedTextView?.text = resultText }
+                                .addOnSuccessListener { resultText -> predictedTextView?.text = resultText
+                                    val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                                    val date = Date()
+                                    val dateString = sdf.format(date);
+                                    storage.addEntry(Entry(Entry.convertImageToByteArray(imageView,40),dateString, resultText))
+                                    storage.commitEntries()}
                                 .addOnFailureListener { e ->
                                     predictedTextView?.text = getString(
                                         R.string.classification_error_message,
                                         e.localizedMessage
                                     )
-                                    Log.e(TAG, "Error classifying drawing.", e)
+                                    Timber.e(e, "Error classifying drawing.")
                                 }
                         }
                     }
@@ -198,9 +178,5 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
                 // Task failed with an exception
                 Timber.e(e)
             }
-    }
-
-    companion object {
-        private const val TAG = "LogActivity"
     }
 }
