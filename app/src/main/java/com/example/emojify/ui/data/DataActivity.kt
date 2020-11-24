@@ -1,26 +1,73 @@
 package com.example.emojify.ui.data
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
+import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.MainActivity
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.activity_data.*
 import org.koin.androidx.scope.currentScope
-
+import timber.log.Timber
 
 class DataActivity : BaseActivity(), DataActivityContract.View {
 
     private val presenter: DataActivityContract.Presenter by currentScope.inject()
+    var pieChart: PieChart? = null
+    var pieData: PieData? = null
+    var pieDataSet: PieDataSet? = null
+    var pieEntries: ArrayList<PieEntry>? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.e("TESTING TESTING")
+        //setSupportActionBar(toolbar)
+        pieChart = findViewById(R.id.pieChart)
+        getEmotionEntrys()
+        pieDataSet = PieDataSet(pieEntries, "")
+        pieData = PieData(pieDataSet)
+        pieChart?.data = pieData
+        pieDataSet?.let { set ->
+            set.setColors(*ColorTemplate.JOYFUL_COLORS)
+            set.sliceSpace = 2f
+            set.valueTextColor = Color.WHITE
+            set.valueTextSize = 10f
+            set.sliceSpace = 5f
+        }
+    }
 
-    //override fun onCreate(savedInstanceState: Bundle?) {
-    //    super.onCreate(savedInstanceState)
-    //    setSupportActionBar(toolbar)
-    //}
+    private fun getEmotionEntrys() {
+        pieEntries = ArrayList()
+        val entryList = StorageSystem.storage.getEntries()
+        val emotionDictionary = ArrayList<EntryCount>()
+        var hasEntry = false
+        entryList.forEach { entry ->
+            Timber.e(entry.emotion)
+            emotionDictionary.forEach {
+                if (it.emotion == entry.emotion) {
+                    it.count += 1
+                    hasEntry = true
+                }
+            }
+            if (!hasEntry) {
+                emotionDictionary.add(EntryCount(1,entry.emotion))
+            }
+        }
+        pieEntries?.let {
+            emotionDictionary.forEach { emotion ->
+                it.add(PieEntry(emotion.count.toFloat(), emotion.emotion))
+            }
+        }
+    }
+    data class EntryCount(var count: Int, val emotion: String)
+
 
     override fun onStart() {
         super.onStart()
@@ -35,8 +82,9 @@ class DataActivity : BaseActivity(), DataActivityContract.View {
         }
         presenter.takeView(this)
 
-
     }
+
+
 
     override fun onStop() {
         super.onStop()
