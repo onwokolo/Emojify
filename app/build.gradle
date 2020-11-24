@@ -71,8 +71,11 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     //FOR TENSOR-FLOW
     implementation 'org.tensorflow:tensorflow-lite:2.0.0'
-    // Task API
+    //Task API
     implementation "com.google.android.gms:play-services-tasks:17.0.0"
+    //JAVA OPEN CV FOR FACE DETECTION
+    implementation "org.bytedeco:javacv:1.4.1"
+    implementation "org.bytedeco.javacpp-presets:opencv:3.4.1-1.4.1:android-arm"
 }
 dependencies {
 
