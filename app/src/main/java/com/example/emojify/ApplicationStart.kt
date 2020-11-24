@@ -18,9 +18,9 @@ open class ApplicationStart : Application() {
         StorageSystem.storage.setContext(context)
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
+        //if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree()) //Sets up timber. I've no idea what that does, but we can use it to create log statements for debugging
-        }
+        //}
 
     }
 

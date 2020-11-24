@@ -4,15 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.collection.arraySetOf
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import com.example.emojify.ApplicationStart
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
@@ -23,6 +24,10 @@ import com.example.emojify.ui.home.MainActivity
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
 import org.koin.androidx.scope.currentScope
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
+import java.text.SimpleDateFormat
+import javax.security.auth.Subject
 
 
 class LogActivity : BaseActivity(), LogActivityContract.View {
@@ -82,6 +87,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
             }
 
         }
+
     }
     @SuppressLint("RestrictedApi")
     fun getPickImageIntent(): Intent? {
@@ -119,7 +125,7 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
     }
 
     private fun classifyImage() {
-        var bitmap = imageView.drawable.toBitmap()
+        val bitmap = imageView.drawable.toBitmap()
         if ((bitmap != null) && (emotionClassifier.isInitialized)) {
             emotionClassifier
                 .classifyAsync(bitmap)
@@ -131,6 +137,14 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
                     )
                     Log.e(TAG, "Error classifying drawing.", e)
                 }
+            //add and commit entry
+            //convert bitmap to bytearray
+            val compressedBMP=Entry.convertImageToByteArray(imageView,40)
+            //retrieve date and convert prediction to string
+            val date=SimpleDateFormat("dd-MMM-yyyy").toString()
+            val emote=predictedTextView.toString()
+            StorageSystem.storage.addEntry(Entry(compressedBMP,date,emote))
+            StorageSystem.storage.commitEntries()
         }
     }
 
