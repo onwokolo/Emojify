@@ -10,6 +10,7 @@ import com.example.emojify.base.BaseActivity
 import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.MainActivity
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -24,9 +25,12 @@ class DataActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pieChart = findViewById(R.id.pieChart)
-        pieDataSet = PieDataSet(getEmotionEntrys(), "Emotions")
+        pieDataSet = PieDataSet(getEmotionEntrys(), "")
         pieData = PieData(pieDataSet)
         pieChart?.data = pieData
+        val blank = Description()
+        blank.text = ""
+        pieChart?.description = blank
         pieDataSet?.let { set ->
             set.setColors(*ColorTemplate.MATERIAL_COLORS)
             set.sliceSpace = 2f

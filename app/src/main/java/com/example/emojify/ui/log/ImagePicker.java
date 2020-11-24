@@ -5,32 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import androidx.exifinterface.media.ExifInterface;
-
-import android.graphics.PointF;
-import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
-//import org.bytedeco.javacv.AndroidFrameConverter;
-//import org.bytedeco.javacv.Frame;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,7 +170,7 @@ public class ImagePicker {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
         return rotate;
     }
@@ -196,9 +184,7 @@ public class ImagePicker {
                     int orientationColumnIndex = cursor.getColumnIndex(columns[0]);
                     result = cursor.getInt(orientationColumnIndex);
                 }
-            } catch (Exception e) {
-                //Do nothing
-            }
+            } catch (Exception ignore) {}
         }
         return result;
     }
