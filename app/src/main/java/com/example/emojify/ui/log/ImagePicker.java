@@ -11,10 +11,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
+
+import android.graphics.PointF;
+import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -243,4 +247,24 @@ public class ImagePicker {
         AndroidFrameConverter converter = new AndroidFrameConverter();
         return converter.convert(bitmap);
     }
+
+    public static int getFaceCount(Bitmap bitmap){
+        int maxFaces = 1;
+        PointF mid = new PointF();
+        Bitmap bitmap565 = bitmap.copy(Bitmap.Config.RGB_565,true);
+        FaceDetector.Face[] faces = new FaceDetector.Face[maxFaces];
+        FaceDetector faceDetector = new FaceDetector(bitmap.getWidth(),bitmap.getHeight(), maxFaces);
+        int faceCount = faceDetector.findFaces(bitmap565, faces);
+        FaceDetector.Face face = faces[0];
+        Log.d("FaceDetection", "Face Count: " + String.valueOf(faceCount));
+        return faceCount;
+    }
+
+    /*public static int detectFaces(Bitmap bmp, int num_faces) {
+        FaceDetector face_detector = new FaceDetector(bmp.getWidth(), bmp.getHeight(), num_faces);
+        FaceDetector.Face[] faces = new FaceDetector.Face[num_faces];
+        int face_count = face_detector.findFaces(bmp, faces);
+
+        return face_count;
+    }*/
 }

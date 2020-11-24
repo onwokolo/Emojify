@@ -4,10 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -17,26 +14,25 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import com.example.emojify.ApplicationStart
-import com.example.emojify.ApplicationStart.Factory.context
 import com.example.emojify.R
 import com.example.emojify.base.BaseActivity
-import com.example.emojify.storage.Entry
 import com.example.emojify.storage.StorageSystem
 import com.example.emojify.ui.home.EmotionClassifier
 import com.example.emojify.ui.home.MainActivity
+/*import com.google.firebase.ml.vision.FirebaseVision
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.face.FirebaseVisionFace
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceContour
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark
+
+ */
 import kotlinx.android.synthetic.main.activity_data.HomeButton
 import kotlinx.android.synthetic.main.activity_log.*
-import org.bytedeco.javacpp.Loader
 import org.bytedeco.javacpp.opencv_core
-import org.bytedeco.javacpp.opencv_core.cvLoad
-import org.bytedeco.javacpp.opencv_objdetect
 import org.bytedeco.javacv.AndroidFrameConverter
-import org.bytedeco.javacv.Frame
 import org.bytedeco.javacv.Java2DFrameUtils.toMat
 import org.koin.androidx.scope.currentScope
-import java.io.File
-import java.lang.Exception
-import java.net.URL
 
 
 class LogActivity : BaseActivity(), LogActivityContract.View {
@@ -65,15 +61,12 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
 
         //Comment/Uncomment/Remove the following 6 lines below...
         //I'm using them to set the display image just to one of our test images
-        /*
         _bitmap = if(_bitmap != null) _bitmap
             else {
                 //BitmapFactory.decodeResource(ApplicationStart.context.resources, R.drawable.neutral)
-                ImagePicker.rotateResourceImage(ApplicationStart.context.resources, R.drawable.neutral)
+                ImagePicker.rotateResourceImage(ApplicationStart.context.resources, R.drawable.surprised)
             }
         imageView.setImageBitmap(_bitmap)
-
-         */
 
         //val file: File = Loader.cacheResource("haarcascade_frontalface_default.xml")
         //val url = URL("https://raw.github.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_alt.xml")
@@ -152,6 +145,10 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
 
     private fun classifyImage() {
         var bitmap = imageView.drawable.toBitmap()
+        val faceCount = ImagePicker.getFaceCount(bitmap)
+        //Log.d(TAG, "Face Count for Color: $faceCount")
+
+        faceDetector(bitmap)
 
         if ((bitmap != null) && (emotionClassifier.isInitialized)) {
             emotionClassifier
@@ -167,22 +164,81 @@ class LogActivity : BaseActivity(), LogActivityContract.View {
         }
     }
 
+    private fun convertImageToGrayscale(bitmap: Bitmap): Bitmap{
+        val grayscaleBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height,Bitmap.Config.ARGB_8888)
+        val c = Canvas(grayscaleBitmap)
+        val paint = Paint()
+        val cm = ColorMatrix()
+        cm.setSaturation(0.0f)
+        val f = ColorMatrixColorFilter(cm)
+        paint.setColorFilter(f)
+        c.drawBitmap(bitmap, 0.0f, 0.0f, paint)
+        return grayscaleBitmap
+    }
+
     private fun faceDetector(bitmap: Bitmap){
         //Apply grayscale filter to imageView and save as a new ImageView
-        var matrix = ColorMatrix()
-        matrix.setSaturation(0.0f)
-        var filter = ColorMatrixColorFilter(matrix)
-        //grayscaleImageView = imageView.setColorFilter(filter)
-
-        //Convert bitmap to frame
-        val converter = AndroidFrameConverter()
-        var frame = converter.convert(bitmap)
-
-        //Convert frame to mat
-        var mat = opencv_core.Mat()
-        mat = toMat(frame)
+        val grayscaleBitmap = convertImageToGrayscale(bitmap)
 
         //TODO() GET THE CLASSIFIER AND DETECT THE FACES
+        val faceCount = ImagePicker.getFaceCount(grayscaleBitmap)
+        Log.d(TAG, "Face Count for Grayscale: $faceCount")
+        //imageView.setImageBitmap(grayscaleBitmap)
+/*
+        val image = FirebaseVisionImage.fromBitmap(bitmap)
+
+        // High-accuracy landmark detection and face classification
+        val highAccuracyOpts = FirebaseVisionFaceDetectorOptions.Builder()
+            .setPerformanceMode(FirebaseVisionFaceDetectorOptions.ACCURATE)
+            .setLandmarkMode(FirebaseVisionFaceDetectorOptions.ALL_LANDMARKS)
+            .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+            .build()
+
+        // Real-time contour detection of multiple faces
+        val realTimeOpts = FirebaseVisionFaceDetectorOptions.Builder()
+            .setContourMode(FirebaseVisionFaceDetectorOptions.ALL_CONTOURS)
+            .build()
+
+        val detector = FirebaseVision.getInstance().getVisionFaceDetector(highAccuracyOpts)
+        val result = detector.detectInImage(image)
+            .addOnSuccessListener { faces ->
+                // Task completed successfully
+                // ...
+                for (face in faces) {
+                    val bounds = face.boundingBox
+                    val rotY = face.headEulerAngleY // Head is rotated to the right rotY degrees
+                    val rotZ = face.headEulerAngleZ // Head is tilted sideways rotZ degrees
+
+                    // If landmark detection was enabled (mouth, ears, eyes, cheeks, and
+                    // nose available):
+                    val leftEar = face.getLandmark(FirebaseVisionFaceLandmark.LEFT_EAR)
+                    leftEar?.let {
+                        val leftEarPos = leftEar.position
+                    }
+
+                    // If contour detection was enabled:
+                    val leftEyeContour = face.getContour(FirebaseVisionFaceContour.LEFT_EYE).points
+                    val upperLipBottomContour = face.getContour(FirebaseVisionFaceContour.UPPER_LIP_BOTTOM).points
+
+                    // If classification was enabled:
+                    if (face.smilingProbability != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
+                        val smileProb = face.smilingProbability
+                    }
+                    if (face.rightEyeOpenProbability != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
+                        val rightEyeOpenProb = face.rightEyeOpenProbability
+                    }
+
+                    // If face tracking was enabled:
+                    if (face.trackingId != FirebaseVisionFace.INVALID_ID) {
+                        val id = face.trackingId
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                // Task failed with an exception
+                // ...
+            }*/
+
         /*
         detectMultiScale(
             grayScaled, // input image

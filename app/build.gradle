@@ -76,6 +76,12 @@ dependencies {
     //JAVA OPEN CV FOR FACE DETECTION
     implementation "org.bytedeco:javacv:1.4.1"
     implementation "org.bytedeco.javacpp-presets:opencv:3.4.1-1.4.1:android-arm"
+    //FIREBASE
+    //implementation 'com.google.firebase:firebase-core:9.6.1'
+    //implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
+    // If you want to detect face contours (landmark detection and classification
+    // don't require this additional model):
+    //implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
 }
 dependencies {
 
@@ -96,3 +102,5 @@ dependencies {
     androidTestImplementation libraries.androidTest
     androidTestImplementation libraries.espresso
 }
+
+//apply plugin: 'com.google.gms.google-services'
