@@ -133,14 +133,20 @@ class LogActivity : BaseActivity() {
                 // Task completed successfully
                 for (face in faces) {
                     bounds = face.boundingBox
+
                     bounds?.let {
-                            croppedBmp = Bitmap.createBitmap(
-                            imageView.drawable.toBitmap(),
-                            it.left,
-                            it.top,
-                            it.width(),
-                            it.height()
-                        )
+                        croppedBmp = if (it.left + it.width() < imageView.drawable.toBitmap().width && it.top + it.height() < imageView.drawable.toBitmap().width) {
+                            Bitmap.createBitmap(
+                                imageView.drawable.toBitmap(),
+                                it.left,
+                                it.top,
+                                it.width(),
+                                it.height()
+                            )
+                        } else {
+                            //Bounding Box is too big, let's change the bitmap to just be the original image
+                            imageView.drawable.toBitmap()
+                        }
                         if (emotionClassifier.isInitialized) {
                             emotionClassifier
                                 .classifyAsync(croppedBmp)

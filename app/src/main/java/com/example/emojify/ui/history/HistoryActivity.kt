@@ -21,12 +21,12 @@ class HistoryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val list: ListView = findViewById(R.id.HistList) //Replace R.id.list with YOUR list
+        val list: ListView = findViewById(R.id.HistList)
         val arrayList: ArrayList<Entry> = StorageSystem.storage.getEntries()
         if (arrayList.size == 0) {
-            //entries is empty, let's put in a textview for that!
+            //entries is empty, let's put in a TextView for that!
             list.visibility = View.GONE //hide the list such that it takes up no space
-            val text: TextView = findViewById(R.id.NoEntries) //replace textytext with your textview ID
+            val text: TextView = findViewById(R.id.NoEntries)
             text.visibility = View.VISIBLE //make it visible and take up space
         } else {
             val customAdapter = EntryAdapter(this,arrayList) //these two lines will implement the entries into the list
