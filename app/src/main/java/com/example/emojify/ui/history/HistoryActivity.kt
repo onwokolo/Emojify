@@ -2,10 +2,6 @@ package com.example.emojify.ui.history
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.*
 import androidx.core.widget.ListViewAutoScrollHelper
 import androidx.navigation.NavType
@@ -18,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_history.*
 import org.koin.androidx.scope.currentScope
 import java.time.LocalDate
 import EntryAdapter
+import android.view.*
 
 
 class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
@@ -27,10 +24,17 @@ class HistoryActivity : BaseActivity(), HistoryActivityContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val list: ListView = findViewById(R.id.HistList)
+        val list: ListView = findViewById(R.id.HistList) //Replace R.id.list with YOUR list
         val arrayList: ArrayList<Entry> = StorageSystem.storage.getEntries()
-        val customAdapter = EntryAdapter(this, arrayList)
-        list.adapter = customAdapter
+        if (arrayList.size == 0) {
+            //entries is empty, let's put in a textview for that!
+            list.visibility = View.GONE //hide the list such that it takes up no space
+            val text: TextView = findViewById(R.id.NoEntries) //replace textytext with your textview ID
+            text.visibility = View.VISIBLE //make it visible and take up space
+        } else {
+            val customAdapter = EntryAdapter(this,arrayList) //these two lines will implement the entries into the list
+            list.adapter = customAdapter
+        }
     }
 
     override fun onStart() {

@@ -22,7 +22,16 @@
         android:text="Home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <TextView
+        android:id="@+id/NoEntries"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAlignment="center"
+        android:text="@string/noentries"
+        app:layout_constraintTop_toBottomOf="@+id/HomeButton"
+        android:layout_marginTop="200dp"
+        android:visibility="gone">
+    </TextView>
     <ListView
         android:id="@+id/HistList"
         android:layout_width="364dp"
