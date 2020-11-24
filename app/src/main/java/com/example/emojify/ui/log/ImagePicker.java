@@ -138,7 +138,6 @@ public class ImagePicker {
 
     private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
         int rotation;
-        Timber.e(String.valueOf(isCamera));
         if (isCamera) {
             rotation = getRotationFromCamera(context, imageUri);
         } else {

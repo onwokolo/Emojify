@@ -46,7 +46,6 @@ class DataActivity : BaseActivity() {
         val emotionDictionary = ArrayList<EntryCount>()
         var hasEntry = false
         entryList.forEach { entry ->
-            Timber.e(entry.emotion)
             emotionDictionary.forEach {
                 if (it.emotion == entry.emotion) {
                     it.count += 1

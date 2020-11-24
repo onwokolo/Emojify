@@ -35,7 +35,6 @@ class LogActivity : BaseActivity() {
     private var predictedTextView: TextView? = null
     private val REQUEST_IMAGE_CAPTURE = 1
     private var emotionClassifier = EmotionClassifier(this)
-    private var _bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,17 +112,13 @@ class LogActivity : BaseActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
             imageView.setImageBitmap(bitmap)
-
-            // For testing purpose...allow imageView to use
-            // selected Image from camera or gallery instead of only the test image
-            _bitmap = ImagePicker.getImageFromResult(this, resultCode, data)
         }
     }
 
 
     @SuppressLint("SetTextI18n")
     private fun classifyImage(){
-        // High-accuracy landmark detection and face classification
+        // High-accuracy face detection, no landmarks or classification
         val highAccuracyOpts = FaceDetectorOptions.Builder()
             .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
             .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
@@ -135,7 +130,6 @@ class LogActivity : BaseActivity() {
         var croppedBmp: Bitmap
         detector.process(image)
             .addOnSuccessListener { faces ->
-                Timber.e("I SUCCEEDED")
                 // Task completed successfully
                 for (face in faces) {
                     bounds = face.boundingBox
@@ -147,8 +141,6 @@ class LogActivity : BaseActivity() {
                             it.width(),
                             it.height()
                         )
-
-                        //imageView.setImageBitmap(croppedBmp)
                         if (emotionClassifier.isInitialized) {
                             emotionClassifier
                                 .classifyAsync(croppedBmp)
@@ -167,12 +159,11 @@ class LogActivity : BaseActivity() {
                                 }
                         }
                     }
-                    Timber.e("I HAVE A FACE")
                 }
                 val faceCount = if(faces != null) faces.size else 0
                 if (faceCount == 0) {
-                    predictedTextView?.text = "NO FACE FOUND"
-                    Timber.e("NO FACE FOUND")
+                    predictedTextView?.text = "No Face Discovered :("
+                    Timber.e("Zero faces found")
                 }
             }
             .addOnFailureListener { e ->
