@@ -1,0 +1,11 @@
+ext.versions = [
+        appcompat           : '1.0.2',
+        timber              : '4.7.1',
+        androidKtx          : '1.1.0',
+]
+
+ext.libraries = [
+        appcompat            : "androidx.appcompat:appcompat:$versions.appcompat",
+        timber               : "com.jakewharton.timber:timber:$versions.timber",
+        androidKtx           : "androidx.core:core-ktx:$versions.androidKtx",
+]
