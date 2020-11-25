@@ -13,6 +13,12 @@
 .externalNativeBuild
 .cxx
 
+# Ignore the Model training data
+Model_Training/data*
+
+# Ignore the .idea files
+ClayMask_Android/.idea
+
 
 # Created by https://www.gitignore.io/api/java,linux,macos,windows,android,intellij,androidstudio
 # Edit at https://www.gitignore.io/?templates=java,linux,macos,windows,android,intellij,androidstudio
