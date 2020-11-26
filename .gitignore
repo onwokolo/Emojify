@@ -17,6 +17,9 @@ ClayMask_Android/.gradle
 # Ignore the Model training data
 Model_Training/data/*
 
+# Ignore Jupyter Notebook checkpoints
+Model_Training/.ipynb_checkpoints*
+
 # Ignore the .idea files
 ClayMask_Android/.idea
 
